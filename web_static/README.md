@@ -1,0 +1,1 @@
+WEB STATIC for AIRBNB clone

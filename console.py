@@ -1,16 +1,17 @@
 #!/usr/bin/python3
 """ Console Module"""
 
+import re
 import cmd
-from models.base_model import BaseModel
+import shlex
+import models
+from models.city import City
 from models.user import User
 from models.place import Place
-from models.amenity import Amenity
-from models.city import City
 from models.state import State
 from models.review import Review
-import models
-import shlex
+from models.amenity import Amenity
+from models.base_model import BaseModel
 
 
 class HBNBCommand(cmd.Cmd):
@@ -32,17 +33,59 @@ class HBNBCommand(cmd.Cmd):
         "State"
     ]
 
+    def precmd(self, line):
+        return super().precmd(line)
+
     def do_create(self, args):
-        """ Usage: create <class>
+        """ Usage: create <class name> <param 1> <param 2>...
+        where param -> key=value
         Creates a new class instance and prints its id
         """
-        arg = shlex.split(args)
+        # split args
+        arg = args.split(' ')
+
+        # param value syntax pattern
+        str_patttern = r'^"([^"]|\")*"$'
+        float_pattern = r'([\d]+\.[\d]+)'
+        int_pattern = r'^\d+$'
+
+        # validate input
         if len(arg) == 0:
             print("** class name missing **")
         elif arg[0] not in HBNBCommand.__classes:
             print("** class doesn't exist **")
         else:
-            print(eval(arg[0])().id)
+            # check if parameters passed
+            if len(arg) > 1:
+                # argument container(dictionary)
+                kwargs = {}
+
+                for i in range(len(arg)):
+                    if '=' in arg[i]:
+                        kw = re.split(r'=', arg[i])
+
+                        # Check for value syntax match
+                        match_str = re.search(str_patttern, kw[1])
+                        match_float = re.search(float_pattern, kw[1])
+                        match_int = re.search(int_pattern, kw[1])
+
+                        # Update values if any match
+                        if match_str:
+                            tmp = shlex.split(arg[i])
+                            kw = tmp[0].split('=')
+                            kw[1] = re.sub(r'_', ' ', kw[1])
+                        if match_float:
+                            kw[1] = float(kw[1])
+                        if match_int:
+                            kw[1] = int(kw[1])
+
+                        # add to container
+                        kwargs[kw[0]] = kw[1]
+
+                # create instance and save to storage
+                print(eval(arg[0])(**kwargs).id)
+            else:
+                print(eval(arg[0])().id)
             models.storage.save()
 
     def do_show(self, args):

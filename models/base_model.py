@@ -23,13 +23,13 @@ class BaseModel:
         self.created_at = datetime.today()
         self.updated_at = datetime.today()
         if kwargs:
-            for k,v in kwargs.items():
+            for k, v in kwargs.items():
                 if k == 'created_at' or k == 'updated_at':
                     self.__dict__[k] = self.__dict__[k].fromisoformat(v)
                 else:
                     self.__dict__[k] = v
-        else:
-            models.storage.new(self)
+
+        models.storage.new(self)
 
     def save(self):
         self.updated_at = datetime.today()

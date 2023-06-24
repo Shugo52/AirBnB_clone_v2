@@ -5,6 +5,10 @@ import cmd
 import uuid
 import models
 from datetime import datetime
+from sqlalchemy import Column, Integer, String, DATETIME
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
 
 
 class BaseModel:
@@ -16,8 +20,14 @@ class BaseModel:
         updated_at: current datetime instance was updated
 
     Attributes:
-        None
+        id (sqlalchemy String): The BaseModel id.
+        created_at (sqlalchemy DateTime): The datetime at creation.
+        updated_at (sqlalchemy DateTime): The datetime of last update.
     """
+    id = Column(String(60), unique=True, nullable=False, primary_key=True)
+    created_at = Column(DATETIME, nullable=False, default=datetime.utcnow())
+    updated_at = Column(DATETIME, nullable=False, default=datetime.utcnow())
+
     def __init__(self, *args, **kwargs):
         self.id = str(uuid.uuid4())
         self.created_at = datetime.today()
@@ -29,10 +39,9 @@ class BaseModel:
                 else:
                     self.__dict__[k] = v
 
-        models.storage.new(self)
-
     def save(self):
         self.updated_at = datetime.today()
+        models.storage.new(self)
         models.storage.save()
 
     def to_dict(self):

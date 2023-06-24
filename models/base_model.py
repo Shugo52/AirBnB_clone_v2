@@ -49,7 +49,13 @@ class BaseModel:
         instanceDict['__class__'] = self.__class__.__name__
         instanceDict['created_at'] = self.created_at.isoformat()
         instanceDict['updated_at'] = self.updated_at.isoformat()
+        if "_sa_instance_state" in instanceDict.keys():
+            del instanceDict["_sa_instance_state"]
         return instanceDict
+
+    def delete(self):
+        """Defines delete method to delete current instance in storage"""
+        models.storage.delete(self)
 
     def __str__(self):
         return f"[{self.__class__.__name__}] ({self.id}) {self.__dict__}"

@@ -21,12 +21,31 @@ class FileStorage:
     __file_path = "file.json"
     __objects = {}
 
-    def all(self):
+    def all(self, cls=None):
         """ Defines 'all' method of class
 
         Returns:
-            The dictionary __objects"""
-        return FileStorage.__objects
+            Dictionary of all cls instances
+        """
+        # if class name is not given
+        if cls is None:
+            return FileStorage.__objects
+
+        # Save class name in a variable
+        class_name = cls.__name__
+
+        # Create empty dictionary to be returned
+        tmp_dict = {}
+
+        # Loop through all keys in __objects
+        for key in self.__objects.keys():
+
+            # Check if class_name mathces present key
+            if key.split('.')[0] == class_name:
+
+                # Update dictionary
+                tmp_dict[key] = self.__objects[key]
+        return tmp_dict
 
     def new(self, obj):
         """ Defines 'new' method
@@ -53,7 +72,15 @@ class FileStorage:
                 objs = json.load(f)
                 for obj in objs.values():
                     class_name = obj['__class__']
-                    #del obj['__class__']
                     self.new(eval(class_name)(**obj))
         except FileNotFoundError:
             return
+
+    def delete(self, obj=None):
+        """Defines delete method to delete and object saved in file"""
+        if obj is None:
+            return
+        obj_key = obj.to_dict()['__class__'] + '.' + obj.id
+        if obj_key in self.__objects.keys():
+            del self.__objects[obj_key]
+        self.save()

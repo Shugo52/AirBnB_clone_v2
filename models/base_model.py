@@ -29,16 +29,17 @@ class BaseModel:
     updated_at = Column(DATETIME, nullable=False, default=datetime.utcnow())
 
     def __init__(self, *args, **kwargs):
-        self.id = str(uuid.uuid4())
-        self.created_at = datetime.today()
-        self.updated_at = datetime.today()
-        if kwargs:
-            for k, v in kwargs.items():
-                if k == 'created_at' or k == 'updated_at':
-                    self.__dict__[k] = self.__dict__[k].fromisoformat(v)
-                else:
-                    self.__dict__[k] = v
-        self.save()
+        """Instatntiates a new model"""
+        if not kwargs:
+            self.id = str(uuid.uuid4())
+            self.created_at = datetime.now()
+            self.updated_at = datetime.now()
+        else:
+            for k in kwargs:
+                if k in ['created_at', 'updated_at']:
+                    setattr(self, k, datetime.fromisoformat(kwargs[k]))
+                elif k != '__class__':
+                    setattr(self, k, kwargs[k])
 
     def save(self):
         self.updated_at = datetime.today()
@@ -51,7 +52,7 @@ class BaseModel:
         instanceDict['created_at'] = self.created_at.isoformat()
         instanceDict['updated_at'] = self.updated_at.isoformat()
         if "_sa_instance_state" in instanceDict.keys():
-            del instanceDict["_sa_instance_state"]
+            del (instanceDict["_sa_instance_state"])
         return instanceDict
 
     def delete(self):

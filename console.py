@@ -1,10 +1,13 @@
 #!/usr/bin/python3
 """ Console Module"""
 
+import os
 import re
 import cmd
+import uuid
 import shlex
 import models
+from datetime import datetime
 from models.city import City
 from models.user import User
 from models.place import Place
@@ -23,70 +26,73 @@ class HBNBCommand(cmd.Cmd):
         __classes: list of all classes
     """
     prompt = "(hbnb) "
-    __classes = [
-        "BaseModel",
-        "User",
-        "Place",
-        "City",
-        "Review",
-        "Amenity",
-        "State"
-    ]
+    __classes = {
+               'BaseModel': BaseModel, 'User': User, 'Place': Place,
+               'State': State, 'City': City, 'Amenity': Amenity,
+               'Review': Review
+              }
 
     def precmd(self, line):
         return super().precmd(line)
 
     def do_create(self, args):
-        """ Usage: create <class name> <param 1> <param 2>...
-        where param -> key=value
-        Creates a new class instance and prints its id
-        """
-        # split args
-        arg = args.split(' ')
-
-        # param value syntax pattern
-        str_patttern = r'^"([^"]|\")*"$'
-        float_pattern = r'([\d]+\.[\d]+)'
-        int_pattern = r'^\d+$'
-
-        # validate input
-        if len(arg) == 0:
-            print("** class name missing **")
-        elif arg[0] not in HBNBCommand.__classes:
-            print("** class doesn't exist **")
+        """ Create an object of any class"""
+        ignored_attrs = ('id', 'created_at', 'updated_at', '__class__')
+        class_name = ''
+        name_pattern = r'(?P<name>(?:[a-zA-Z]|_)(?:[a-zA-Z]|\d|_)*)'
+        class_match = re.match(name_pattern, args)
+        obj_kwargs = {}
+        if class_match is not None:
+            class_name = class_match.group('name')
+            params_str = args[len(class_name):].strip()
+            params = params_str.split(' ')
+            str_pattern = r'(?P<t_str>"([^"]|\")*")'
+            float_pattern = r'(?P<t_float>[-+]?\d+\.\d+)'
+            int_pattern = r'(?P<t_int>[-+]?\d+)'
+            param_pattern = '{}=({}|{}|{})'.format(
+                name_pattern,
+                str_pattern,
+                float_pattern,
+                int_pattern
+            )
+            for param in params:
+                param_match = re.fullmatch(param_pattern, param)
+                if param_match is not None:
+                    key_name = param_match.group('name')
+                    str_v = param_match.group('t_str')
+                    float_v = param_match.group('t_float')
+                    int_v = param_match.group('t_int')
+                    if float_v is not None:
+                        obj_kwargs[key_name] = float(float_v)
+                    if int_v is not None:
+                        obj_kwargs[key_name] = int(int_v)
+                    if str_v is not None:
+                        obj_kwargs[key_name] = str_v[1:-1].replace('_', ' ')
         else:
-            # check if parameters passed
-            if len(arg) > 1:
-                # argument container(dictionary)
-                kwargs = {}
-
-                for i in range(len(arg)):
-                    if '=' in arg[i]:
-                        kw = re.split(r'=', arg[i])
-
-                        # Check for value syntax match
-                        match_str = re.search(str_patttern, kw[1])
-                        match_float = re.search(float_pattern, kw[1])
-                        match_int = re.search(int_pattern, kw[1])
-
-                        # Update values if any match
-                        if match_str:
-                            tmp = shlex.split(arg[i])
-                            kw = tmp[0].split('=')
-                            kw[1] = re.sub(r'_', ' ', kw[1])
-                        if match_float:
-                            kw[1] = float(kw[1])
-                        if match_int:
-                            kw[1] = int(kw[1])
-
-                        # add to container
-                        kwargs[kw[0]] = kw[1]
-
-                # create instance and save to storage
-                print(eval(arg[0])(**kwargs).id)
-            else:
-                print(eval(arg[0])().id)
-            models.storage.save()
+            class_name = args
+        if not class_name:
+            print("** class name missing **")
+            return
+        elif class_name not in HBNBCommand.__classes:
+            print("** class doesn't exist **")
+            return
+        if os.getenv('HBNB_TYPE_STORAGE') == 'db':
+            if not hasattr(obj_kwargs, 'id'):
+                obj_kwargs['id'] = str(uuid.uuid4())
+            if not hasattr(obj_kwargs, 'created_at'):
+                obj_kwargs['created_at'] = str(datetime.now())
+            if not hasattr(obj_kwargs, 'updated_at'):
+                obj_kwargs['updated_at'] = str(datetime.now())
+            new_instance = HBNBCommand.__classes[class_name](**obj_kwargs)
+            new_instance.save()
+            print(new_instance.id)
+        else:
+            new_instance = HBNBCommand.__classes[class_name]()
+            for key, value in obj_kwargs.items():
+                if key not in ignored_attrs:
+                    setattr(new_instance, key, value)
+            new_instance.save()
+            print(new_instance.id)
 
     def do_show(self, args):
         """Usage: show <class> <id>

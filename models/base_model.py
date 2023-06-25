@@ -38,6 +38,7 @@ class BaseModel:
                     self.__dict__[k] = self.__dict__[k].fromisoformat(v)
                 else:
                     self.__dict__[k] = v
+        self.save()
 
     def save(self):
         self.updated_at = datetime.today()

@@ -12,12 +12,12 @@ def do_pack():
     """
     # set .tgz file name
     dt = datetime.utcnow()
-    file = f"web_static_{dt.year}\
-                        {dt.month}\
-                        {dt.day}\
-                        {dt.hour}\
-                        {dt.minute}\
-                        {dt.second}.tgz"
+    file = "versions/web_static_{}{}{}{}{}{}.tgz".format(dt.year,
+                                                         dt.month,
+                                                         dt.day,
+                                                         dt.hour,
+                                                         dt.minute,
+                                                         dt.second)
 
     # create versions direction if it does not exist
     if os.path.isdir("versions") is False:

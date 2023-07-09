@@ -1,4 +1,4 @@
-#!/usr/bin/pyhton3
+#!/usr/bin/python3
 """Fabric script that distributes an archive to your web servers"""
 
 import os.path

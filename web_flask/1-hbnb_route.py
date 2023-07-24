@@ -1,5 +1,12 @@
 #!/usr/bin/python3
-"""flask script that listens on port 5000"""
+"""Starts a Flask web application
+Listens on 0.0.0.0, port 5000
+Routes:
+    /:
+        display “Hello HBNB!”
+    /hbnb:
+        display “HBNB”
+"""
 
 from flask import Flask
 
@@ -8,11 +15,13 @@ app = Flask(__name__)
 
 @app.route('/', strict_slashes=False)
 def hello():
+    """Displays 'Hello HBNB'"""
     return 'Hello HBNB!'
 
 
 @app.route('/hbnb', strict_slashes=False)
 def hbnb():
+    """Displays 'HBNB'"""
     return 'HBNB'
 
 

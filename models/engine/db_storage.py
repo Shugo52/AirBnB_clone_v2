@@ -13,8 +13,7 @@ from sqlalchemy.sql import text
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 
-classes = {"User": User, "State": State, "City": City,
-           "Amenity": Amenity, "Place": Place, "Review": Review}
+classes = {"State": State, "City": City,}
 
 
 class DBStorage:

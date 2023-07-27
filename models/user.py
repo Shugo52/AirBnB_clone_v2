@@ -3,10 +3,10 @@
 
 from models import storage_type
 from sqlalchemy import Column, String
-from models.base_model import BaseModel
+from models.base_model import BaseModel, Base
 
 
-class User(BaseModel):
+class User(BaseModel, Base):
     """ Defines User class that inherits from BaseModel
 
     Attributes:
@@ -17,10 +17,11 @@ class User(BaseModel):
     """
     __tablename__ = 'users'
     if storage_type == 'db':
-        mail = Column(String(128), nullable=False)
+        email = Column(String(128), nullable=False)
         password = Column(String(128), nullable=False)
         first_name = Column(String(128), nullable=True)
         last_name = Column(String(128), nullable=True)
+    
     email = ""
     password = ""
     first_name = ""

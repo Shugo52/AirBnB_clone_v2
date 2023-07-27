@@ -9,7 +9,7 @@ from models import storage
 app = Flask(__name__)
 
 
-@app.route('/state_list', strict_slashes=False)
+@app.route('/states_list', strict_slashes=False)
 def states_list():
     """Displays an HTML page with a list of all State objects in DBStorage.
     States are sorted by name.
@@ -19,7 +19,7 @@ def states_list():
 
 
 @app.teardown_appcontext
-def teardown():
+def teardown(exc):
     """Remove the current SQLAlchemy session."""
     storage.close()
 

@@ -4,6 +4,7 @@ Listening on port 0.0.0.0, port 5000
 """
 
 from flask import Flask, render_template
+#from sqlalchemy.sql import text
 from models import storage
 
 app = Flask(__name__)

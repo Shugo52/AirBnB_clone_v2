@@ -2,10 +2,10 @@
 """Defines the Amenity class."""
 from models import storage_type
 from sqlalchemy import Column, String
-from models.base_model import BaseModel
+from models.base_model import BaseModel, Base
 
 
-class Amenity(BaseModel):
+class Amenity(BaseModel, Base):
     """Represent an amenity.
 
     Attributes:

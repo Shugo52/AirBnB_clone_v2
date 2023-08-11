@@ -64,11 +64,9 @@ class DBStorage:
 
     def new(self, obj):
         """Defines add method that adds obj to the current db session"""
-        if obj is not None:
+        if obj:
             try:
                 self.__session.add(obj)
-                self.__session.flush()
-                self.__session.refresh(obj)
             except Exception as ex:
                 self.__session.rollback()
                 raise ex

@@ -51,28 +51,16 @@ class DBStorage:
         Args:
             cls: class of objects to retrieve
         """
-        dct = {}
-        if cls is None:
-
-            # query all objects
-            for c in classes.values():
-                objs = self.__session.query(c).all()
-                for obj in objs:
-                    # set key format (<class-name>.<object-id>)
-                    key = obj.__class__.__name__ + '.' + obj.id
-
-                    dct[key] = obj
+        objs = {}
+        if cls:
+            objs = {obj.__class__.__name__ + "." + obj.id: obj for
+                       obj in self.__session.query(classes[cls]).all()}
         else:
-            if cls in classes.values():
-
-                # query all cls objects
-                objs = self.__session.query(cls).all()
-                for obj in objs:
-                    # set key format (<class-name>.<object-id>)
-                    key = obj.__class__.__name__ + '.' + obj.id
-
-                    dct[key] = obj
-        return dct
+            for tbl in Base.__subclasses__():
+                table = self.__session.query(tbl).all()
+                for obj in table:
+                    objs[obj.__class__.__name__ + "." + obj.id] = obj
+        return objs
 
     def new(self, obj):
         """Defines add method that adds obj to the current db session"""

@@ -9,7 +9,7 @@ from models.state import State
 from models.review import Review
 from models.amenity import Amenity
 from models.base_model import Base
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker, scoped_session
 
 classes = {"User": User, "State": State, "City": City,

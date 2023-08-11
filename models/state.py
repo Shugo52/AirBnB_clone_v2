@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 """ State Module"""
 
-from models.city import City
 from models import storage_type
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship

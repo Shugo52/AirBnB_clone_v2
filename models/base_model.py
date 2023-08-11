@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 """ Base Model Module"""
 
-import cmd
 import uuid
 import models
 from datetime import datetime
@@ -47,12 +46,12 @@ class BaseModel:
         models.storage.save()
 
     def to_dict(self):
+        """Defines to_dict method to convert object to dictionary"""
         instanceDict = self.__dict__.copy()
         instanceDict['__class__'] = self.__class__.__name__
         instanceDict['created_at'] = self.created_at.isoformat()
         instanceDict['updated_at'] = self.updated_at.isoformat()
-        if "_sa_instance_state" in instanceDict.keys():
-            del (instanceDict["_sa_instance_state"])
+        instanceDict.pop("_sa_instance_state", None)
         return instanceDict
 
     def delete(self):

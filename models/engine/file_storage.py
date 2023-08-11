@@ -26,6 +26,8 @@ class FileStorage:
 
         Returns:
             Dictionary of all cls instances
+
+        usage: all || all <class name>
         """
         # if class name is not given
         if cls is None:

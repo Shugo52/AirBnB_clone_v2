@@ -36,7 +36,10 @@ class HBNBCommand(cmd.Cmd):
         return super().precmd(line)
 
     def do_create(self, args):
-        """ Create an object of any class"""
+        """ Create an object of any class
+        usage: create <class name> <param 1> <param 2> ...
+        param = <key name>=<value>
+        """
         ignored_attrs = ('id', 'created_at', 'updated_at', '__class__')
         class_name = ''
         name_pattern = r'(?P<name>(?:[a-zA-Z]|_)(?:[a-zA-Z]|\d|_)*)'

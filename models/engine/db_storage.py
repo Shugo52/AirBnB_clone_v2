@@ -78,14 +78,14 @@ class DBStorage:
     def delete(self, obj=None):
         """Defines delete method that deletes an object in current session"""
         if obj:
-            self.__session.query(type(obj)).filter(
-                type(obj).id == obj.id).delete()
+            self.__session.delete(obj)
 
     def reload(self):
         """Defines reload method to create db session"""
         Base.metadata.create_all(self.__engine)
         session = sessionmaker(bind=self.__engine, expire_on_commit=False)
-        self.__session = scoped_session(session)()
+        Session = scoped_session(session)
+        self.__session = Session()
 
     def close(self):
         """Calls close() method of a session"""

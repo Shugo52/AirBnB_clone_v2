@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """ State Module"""
 
-from models import storage_type
+import models
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 from models.base_model import BaseModel, Base
@@ -14,10 +14,10 @@ class State(BaseModel, Base):
         name (str): state name
     """
     __tablename__ = 'states'
-    if storage_type == 'db':
+    if models.storage_type == 'db':
         name = Column(String(128), nullable=False)
         cities = relationship('City', backref='state',
-                              cascade='all, delete, delete-orphan')
+                              cascade='all, delete-orphan')
     else:
         name = ''
 
@@ -27,10 +27,5 @@ class State(BaseModel, Base):
                 equals the current State.id
                 FileStorage relationship between State and City
             '''
-            from models import storage
-            related_cities = []
-            cities = storage.all(City)
-            for city in cities.values():
-                if city.state_id == self.id:
-                    related_cities.append(city)
-            return related_cities
+            Rcities = models.storage.all(models.classes['City']).values()
+            return [city for city in Rcities if city.state_id == self.id]

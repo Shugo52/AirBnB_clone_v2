@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+from models.place import Place
 from models import storage_type
 from sqlalchemy.orm import relationship
 from models.base_model import BaseModel, Base
@@ -14,11 +15,10 @@ class City(BaseModel, Base):
         name (str): city name
     """
     __tablename__ = "cities"
-    if storage_type == 'db':
-        name = Column(String(128), nullable=False)
-        state_id = Column(String(60), ForeignKey('states.id'), nullable=False)
-        places = relationship("Place", backref="cities",
-                              cascade="all, delete, delete-orphan")
-    else:
+    name = Column(String(128), nullable=False)
+    state_id = Column(String(60), ForeignKey('states.id'), nullable=False)
+    places = relationship("Place", backref="cities",
+                            cascade="all, delete, delete-orphan")
+    if storage_type != 'db':
         name = ''
         state_id = ''

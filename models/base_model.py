@@ -4,8 +4,8 @@
 import uuid
 import models
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, DATETIME
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, Integer, String, DATETIME
 
 Base = declarative_base()
 
@@ -29,23 +29,15 @@ class BaseModel:
 
     def __init__(self, *args, **kwargs):
         """Instatntiates a new model"""
-        if not kwargs:
-            self.id = str(uuid.uuid4())
-            self.created_at = datetime.now()
-            self.updated_at = datetime.now()
-        else:
+        self.id = str(uuid.uuid4())
+        self.created_at = datetime.now()
+        self.updated_at = datetime.now()
+        if kwargs:
             for k in kwargs:
                 if k in ['created_at', 'updated_at']:
                     setattr(self, k, datetime.fromisoformat(kwargs[k]))
                 elif k != '__class__':
                     setattr(self, k, kwargs[k])
-            if models.storage_type == 'db':
-                if not hasattr(kwargs, 'id'):
-                    setattr(self, 'id', str(uuid.uuid4()))
-                if not hasattr(kwargs, 'created_at'):
-                    setattr(self, 'created_at', datetime.now())
-                if not hasattr(kwargs, 'updated_at'):
-                    setattr(self, 'updated_at', datetime.now())
 
     def save(self):
         self.updated_at = datetime.today()
@@ -68,4 +60,6 @@ class BaseModel:
         models.storage.delete(self)
 
     def __str__(self):
-        return f"[{self.__class__.__name__}] ({self.id}) {self.__dict__}"
+        d = self.__dict__.copy()
+        d.pop("_sa_instance_state", None)
+        return "[{}] ({}) {}".format(type(self).__name__, self.id, d)

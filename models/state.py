@@ -15,22 +15,18 @@ class State(BaseModel, Base):
         name (str): state name
     """
     __tablename__ = 'states'
-    if models.storage_type == 'db':
-        name = Column(String(128), nullable=False)
-        cities = relationship('City', backref='state',
-                              cascade='all, delete, delete-orphan')
-    else:
-        name = ''
+    name = Column(String(128), nullable=False)
+    cities = relationship("City", backref="state", cascade="delete")
 
+    if models.storage_type != 'db':
         @property
         def cities(self):
-            '''returns the list of City instances with state_id
-                equals the current State.id
-                FileStorage relationship between State and City
-            '''
-            related_cities = []
-            cities = models.storage.all(City)
-            for city in cities.values():
+            """get a list of all related city instances
+            with state_id = to the current state id
+            """
+            cities_list = []
+
+            for city in list(models.storage.all(City).values()):
                 if city.state_id == self.id:
-                    related_cities.append(city)
-            return related_cities
+                    cities_list.append(city)
+            return cities_list

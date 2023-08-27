@@ -2,7 +2,7 @@
 """ State Module"""
 
 import models
-from .city import City
+from models.city import City
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 from models.base_model import BaseModel, Base

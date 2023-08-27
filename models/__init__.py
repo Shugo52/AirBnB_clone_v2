@@ -2,8 +2,6 @@
 """__init__ magic method for models directory"""
 from os import getenv
 
-classes = ["User", "State", "City", "Amenity", "Place", "Review"]
-
 storage_type = getenv('HBNB_TYPE_STORAGE')
 
 if storage_type == 'db':

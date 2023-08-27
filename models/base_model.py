@@ -39,6 +39,13 @@ class BaseModel:
                     setattr(self, k, datetime.fromisoformat(kwargs[k]))
                 elif k != '__class__':
                     setattr(self, k, kwargs[k])
+            if models.storage_type == 'db':
+                if not hasattr(kwargs, 'id'):
+                    setattr(self, 'id', str(uuid.uuid4()))
+                if not hasattr(kwargs, 'created_at'):
+                    setattr(self, 'created_at', datetime.now())
+                if not hasattr(kwargs, 'updated_at'):
+                    setattr(self, 'updated_at', datetime.now())
 
     def save(self):
         self.updated_at = datetime.today()
@@ -47,12 +54,14 @@ class BaseModel:
 
     def to_dict(self):
         """Defines to_dict method to convert object to dictionary"""
-        instanceDict = self.__dict__.copy()
-        instanceDict['__class__'] = self.__class__.__name__
-        instanceDict['created_at'] = self.created_at.isoformat()
-        instanceDict['updated_at'] = self.updated_at.isoformat()
-        instanceDict.pop("_sa_instance_state", None)
-        return instanceDict
+        dct = self.__dict__.copy()
+        dct['__class__'] = self.__class__.__name__
+        for k in dct:
+            if type(dct[k]) is datetime:
+                dct[k] = dct[k].isoformat()
+        if '_sa_instance_state' in dct.keys():
+            del(dct['_sa_instance_state'])
+        return dct
 
     def delete(self):
         """Defines delete method to delete current instance in storage"""

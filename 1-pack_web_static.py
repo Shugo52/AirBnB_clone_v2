@@ -10,21 +10,15 @@ def do_pack():
     """ Defines do_pack funtion which
     generates a .tgz file for web_static
     """
-    # set .tgz file name
-    dt = datetime.utcnow()
-    file = "versions/web_static_{}{}{}{}{}{}.tgz".format(dt.year,
-                                                         dt.month,
-                                                         dt.day,
-                                                         dt.hour,
-                                                         dt.minute,
-                                                         dt.second)
+    # packs file
 
-    # create versions direction if it does not exist
-    if os.path.isdir("versions") is False:
-        if local("mkdir -p versions").failed is True:
-            return None
-
-    # generate .tgz file
-    if local("tar -cvzf {} web_static".format(file)).failed is True:
+    try:
+        file = "web_static_" + datetime.now().strftime("%Y%m%d%H%M%S")
+        local('mkdir -p versions')
+        local("tar -cvzf versions/{}.tgz {}".format(
+            file, "web_static/"))
+        size = os.path.getsize("./versions/{}.tgz".format(file))
+        print("web_static packed: versions/{}.tgz -> {}Bytes".format(
+            file, size))
+    except:
         return None
-    return file

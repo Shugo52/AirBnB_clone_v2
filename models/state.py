@@ -2,7 +2,6 @@
 """ State Module"""
 
 import models
-#from models.city import City
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 from models.base_model import BaseModel, Base
@@ -24,9 +23,5 @@ class State(BaseModel, Base):
             """get a list of all related city instances
             with state_id = to the current state id
             """
-            cities_list = []
-
-            for city in list(models.storage.all("City").values()):
-                if city.state_id == self.id:
-                    cities_list.append(city)
-            return cities_list
+            FLcity = models.storage.all(models.classes['City']).values()
+            return [city for city in FLcity if city.state_id == self.id]

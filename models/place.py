@@ -52,9 +52,9 @@ class Place(BaseModel, Base):
         latitude = Column(Float, nullable=False)
         longitude = Column(Float, nullable=False)
         reviews = relationship('Review', backref='place',
-                            cascade='all, delete, delete-orphan')
+                               cascade='all, delete, delete-orphan')
         amenities = relationship('Amenity', secondary=place_amenity,
-                                viewonly=False, backref='place_amenities')
+                                 viewonly=False, backref='place_amenities')
     else:
         city_id = ""
         user_id = ""

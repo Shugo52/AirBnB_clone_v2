@@ -23,10 +23,9 @@ class BaseModel:
         created_at (sqlalchemy DateTime): The datetime at creation.
         updated_at (sqlalchemy DateTime): The datetime of last update.
     """
-    if models.storage_type == 'db':
-        id = Column(String(60), unique=True, nullable=False, primary_key=True)
-        created_at = Column(DATETIME, nullable=False, default=datetime.utcnow())
-        updated_at = Column(DATETIME, nullable=False, default=datetime.utcnow())
+    id = Column(String(60), unique=True, nullable=False, primary_key=True)
+    created_at = Column(DATETIME, nullable=False, default=datetime.utcnow())
+    updated_at = Column(DATETIME, nullable=False, default=datetime.utcnow())
 
     def __init__(self, *args, **kwargs):
         """Instatntiates a new model"""

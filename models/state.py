@@ -2,7 +2,7 @@
 """ State Module"""
 
 import models
-from models.city import City
+#from models.city import City
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 from models.base_model import BaseModel, Base
@@ -26,7 +26,7 @@ class State(BaseModel, Base):
             """
             cities_list = []
 
-            for city in list(models.storage.all(City).values()):
+            for city in list(models.storage.all("City").values()):
                 if city.state_id == self.id:
                     cities_list.append(city)
             return cities_list

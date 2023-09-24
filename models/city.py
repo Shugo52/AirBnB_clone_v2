@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 
-from models.place import Place
 from models import storage_type
 from sqlalchemy.orm import relationship
 from models.base_model import BaseModel, Base

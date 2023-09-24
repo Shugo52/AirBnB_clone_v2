@@ -16,16 +16,16 @@ class User(BaseModel, Base):
         first_name (str): user first name
         last_name (str): user last name
     """
-    __tablename__ = 'users'
-    if storage_type == 'db':
+    __tablename__ = "users"
+    if storage_type == "db":
         email = Column(String(128), nullable=False)
         password = Column(String(128), nullable=False)
         first_name = Column(String(128), nullable=True)
         last_name = Column(String(128), nullable=True)
-        places = relationship('Place', backref='user',
-                              cascade='all, delete, delete-orphan')
-        reviews = relationship('Review', backref='user',
-                               cascade='all, delete, delete-orphan')
+        places = relationship("Place", backref="user",
+                              cascade="all, delete, delete-orphan")
+        reviews = relationship("Review", backref="user",
+                               cascade="all, delete, delete-orphan")
     else:
         email = ""
         password = ""

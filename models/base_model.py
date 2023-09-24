@@ -29,15 +29,26 @@ class BaseModel:
 
     def __init__(self, *args, **kwargs):
         """Instatntiates a new model"""
-        self.id = str(uuid.uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = datetime.now()
-        if kwargs:
-            for k in kwargs:
-                if k in ['created_at', 'updated_at']:
-                    setattr(self, k, datetime.fromisoformat(kwargs[k]))
-                elif k != '__class__':
-                    setattr(self, k, kwargs[k])
+        if (len(kwargs) == 0):
+            self.id = str(uuid.uuid4())
+            self.created_at = datetime.now()
+            self.updated_at = datetime.now()
+        else:
+            if kwargs.get('created_at'):
+                kwargs["created_at"] = datetime.strptime(
+                    kwargs["created_at"], "%Y-%m-%dT%H:%M:%S.%f")
+            else:
+                self.created_at = datetime.now()
+            if kwargs.get('updated_at'):
+                kwargs["updated_at"] = datetime.strptime(
+                    kwargs["updated_at"], "%Y-%m-%dT%H:%M:%S.%f")
+            else:
+                self.updated_at = datetime.now()
+            for key, val in kwargs.items():
+                if "__class__" not in key:
+                    setattr(self, key, val)
+            if not self.id:
+                self.id = str(uuid.uuid4())
 
     def save(self):
         self.updated_at = datetime.today()

@@ -14,11 +14,11 @@ class State(BaseModel, Base):
     Attributes:
         name (str): state name
     """
-    __tablename__ = 'states'
-    name = Column(String(128), nullable=False)
-    cities = relationship("City", backref="state", cascade="delete")
-
-    if models.storage_type != 'db':
+    if models.storage_type == 'db':
+        __tablename__ = 'states'
+        name = Column(String(128), nullable=False)
+        cities = relationship("City", backref="state", cascade="delete")
+    else:
         @property
         def cities(self):
             """get a list of all related city instances
@@ -30,3 +30,6 @@ class State(BaseModel, Base):
                 if city.state_id == self.id:
                     cities_list.append(city)
             return cities_list
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)

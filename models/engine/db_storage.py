@@ -35,7 +35,7 @@ class DBStorage:
         enviroment = getenv('HBNB_ENV')
 
         # initiate connection to mysql
-        self.__engine = create_engine("mysql+mysqldb://{}:{}@{}/{}".format(
+        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.format(
                                       user,
                                       password,
                                       host,

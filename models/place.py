@@ -106,6 +106,3 @@ class Place(BaseModel, Base):
                 if isinstance(obj, Amenity):
                     if obj.id not in self.amenity_ids:
                         self.amenity_ids.append(obj.id)
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)

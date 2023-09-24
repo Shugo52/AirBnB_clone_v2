@@ -14,8 +14,8 @@ class State(BaseModel, Base):
     Attributes:
         name (str): state name
     """
-    __tablename__ = 'states'
     if models.storage_type == 'db':
+        __tablename__ = 'states'
         name = Column(String(128), nullable=False)
         cities = relationship("City", backref="state", cascade="delete")
     else:
@@ -30,6 +30,3 @@ class State(BaseModel, Base):
                 if city.state_id == self.id:
                     cities_list.append(city)
             return cities_list
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)

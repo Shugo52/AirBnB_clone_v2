@@ -40,7 +40,7 @@ class Place(BaseModel, Base):
         amenity_ids (list): list of Amenity.id
     """
     __tablename__ = 'places'
-    if storage_type == 'db':  
+    if storage_type == 'db':
         city_id = Column(String(60), ForeignKey('cities.id'), nullable=False)
         user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
         name = Column(String(128), nullable=False)

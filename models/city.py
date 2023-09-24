@@ -13,8 +13,8 @@ class City(BaseModel, Base):
         state_id (str): would be State.id
         name (str): city name
     """
+    __tablename__ = "cities"
     if storage_type == 'db':
-        __tablename__ = "cities"
         name = Column(String(128), nullable=False)
         state_id = Column(String(60), ForeignKey('states.id'), nullable=False)
         places = relationship("Place", backref="cities",

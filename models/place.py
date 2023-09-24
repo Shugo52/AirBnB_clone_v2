@@ -39,8 +39,8 @@ class Place(BaseModel, Base):
         longitude (float): longitude of place
         amenity_ids (list): list of Amenity.id
     """
-    if storage_type == 'db':
-        __tablename__ = 'places'
+    __tablename__ = 'places'
+    if storage_type == 'db':  
         city_id = Column(String(60), ForeignKey('cities.id'), nullable=False)
         user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
         name = Column(String(128), nullable=False)

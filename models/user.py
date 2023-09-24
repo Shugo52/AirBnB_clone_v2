@@ -16,8 +16,8 @@ class User(BaseModel, Base):
         first_name (str): user first name
         last_name (str): user last name
     """
+    __tablename__ = 'users'
     if storage_type == 'db':
-        __tablename__ = 'users'
         email = Column(String(128), nullable=False)
         password = Column(String(128), nullable=False)
         first_name = Column(String(128), nullable=True)

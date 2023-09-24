@@ -12,8 +12,8 @@ class Amenity(BaseModel, Base):
     Attributes:
         name (str): The name of the amenity.
     """
+    __tablename__ = 'amenities'
     if storage_type == 'db':
-        __tablename__ = 'amenities'
         name = Column(String(128), nullable=False)
     else:
         name = ""
